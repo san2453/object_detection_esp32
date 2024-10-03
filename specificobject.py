@@ -2,13 +2,13 @@ import cv2
 import numpy as np
 import urllib.request
 
-url = 'http://192.168.43.219/cam-lo.jpg'
+url = 'http://192.168.43.219/cam-lo.jpg' #this is the ip address you get after running cam_mod_Servo 
 
 cap = cv2.VideoCapture(url)
 whT=320
 confThreshold = 0.5
 nmsThreshold = 0.3
-classesfile='coco.names'
+classesfile='/Users/banerjees_s_S/Desktop/yolo/coco.names'   #this is the location of coco.names on my device
 classNames=[]
 with open(classesfile,'rt') as f:
     classNames=f.read().rstrip('\n').split('\n')
@@ -46,17 +46,17 @@ def findObject(outputs,im):
         i = i[0]
         box = bbox[i]
         x,y,w,h = box[0],box[1],box[2],box[3]
-        if classNames[classIds[i]] == 'scissors':
+        if classNames[classIds[i]] == 'bird':
             found_bird = True
         elif classNames[classIds[i]] == 'cat':
             found_cat = True
-        if found_cat or found_bird:
+        
+        if(found_cat or found_bird):  
             cv2.rectangle(im,(x,y),(x+w,y+h),(255,0,255),2)
             cv2.putText(im, f'{classNames[classIds[i]].upper()} {int(confs[i]*100)}%', (x,y-10), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255,0,255), 2)
         else:
             pass
-            
-        
+
 
 while True:
     img_resp=urllib.request.urlopen(url)
